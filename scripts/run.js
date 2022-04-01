@@ -1,3 +1,5 @@
+/* TESTING Random reward and Cooldown functionalities */
+
 const main = async () => {
   /*
    * Establish connection with the contract and
@@ -16,10 +18,20 @@ const main = async () => {
   await getContractBalance(waveContract.address);
 
   /*
-    Carrying out a WAVE TXN
+    Carrying out 3 WAVE TXNs
   */
+  const accounts = await hre.ethers.getSigners();
+
   let waveTxn = await waveContract.wave("Hiiii, its KM");
   await waveTxn.wait(); // wait for the transaction to be mined
+
+  waveTxn = await waveContract.connect(accounts[1]).wave("hey its muskan");
+  await waveTxn.wait();
+
+  setTimeout(async () => {
+    waveTxn = await waveContract.wave("KM Again");
+    await waveTxn.wait();
+  }, 12000);
 };
 
 const getContractBalance = async (contractAddress) => {
@@ -33,7 +45,7 @@ const getContractBalance = async (contractAddress) => {
 const runMain = async () => {
   try {
     await main();
-    process.exit(0);
+    //process.exit(0);
   } catch (error) {
     console.log(error);
     process.exit(1);

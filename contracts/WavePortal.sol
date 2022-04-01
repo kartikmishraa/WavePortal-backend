@@ -10,6 +10,8 @@ contract WavePortal {
     uint256 private seed; // seed to generate randomm number
     uint256 prizeAmount = 0.0001 ether; // reward amount
 
+    mapping(address => uint256) public lastWavedAt; // to store last time user waved
+
     constructor() payable {
         console.log("New Smart Contract created...");
 
@@ -33,6 +35,16 @@ contract WavePortal {
     * Function to wave. Stores the waver, the message and the timestamp
     */
     function wave(string memory _message) public {
+        
+        // Cooldown condition
+        require(
+            lastWavedAt[msg.sender] + 2 minutes < block.timestamp, 
+            "Wait for 2 minutes"
+        );
+
+        // Updating current timestamp for the user
+        lastWavedAt[msg.sender] = block.timestamp;
+
         /*
             Adding the wave details on the chain
         */
