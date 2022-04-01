@@ -34,7 +34,7 @@ const main = async () => {
   }, 12000);
 };
 
-const getContractBalance = async (contractAddress) => {
+export default getContractBalance = async (contractAddress) => {
   const contractBalance = await hre.ethers.provider.getBalance(contractAddress);
   console.log(
     "Contract Balance: ",
