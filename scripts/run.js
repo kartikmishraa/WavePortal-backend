@@ -20,13 +20,6 @@ const main = async () => {
   */
   let waveTxn = await waveContract.wave("Hiiii, its KM");
   await waveTxn.wait(); // wait for the transaction to be mined
-
-  // Logging out CONTRACT BALANCE after wave txn
-  await getContractBalance(waveContract.address);
-
-  // Logging out TOTAL WAVES
-  let waveCount = await waveContract.getTotalWaves();
-  console.log("Total waves: ", waveCount.toNumber());
 };
 
 const getContractBalance = async (contractAddress) => {

@@ -6,13 +6,18 @@ import "hardhat/console.sol";
 
 contract WavePortal {
     
+    uint256 totalWaves; // state variable to store no. of waves
+    uint256 private seed; // seed to generate randomm number
+    uint256 prizeAmount = 0.0001 ether; // reward amount
+
     constructor() payable {
         console.log("New Smart Contract created...");
+
+        seed = (block.timestamp + block.difficulty) % 100;  // Seed initialized @ contract deployment 
     }
 
-    uint256 totalWaves; // state variable to store no. of waves
 
-    // An event to flag wave creation
+    // Event to flag wave creation
     event NewWave(address indexed from, uint256 timestamp, string message);
 
     // Wave struct to store wave details
@@ -38,16 +43,29 @@ contract WavePortal {
 
         emit NewWave(msg.sender, block.timestamp, _message);
 
-        /*
-            Sending the reward money to wavers
-        */
-        uint256 prizeAmount = 0.0001 ether;
-        require(
-            prizeAmount <= address(this).balance,
-            "Funds insufficient to carry out the transaction."
-        );
-        (bool success, ) = (msg.sender).call{value: prizeAmount}("");
-        require(success, "Failed to withdraw money from the contract.");
+
+        // Generating random seed
+        seed = (seed + block.timestamp + block.difficulty) % 100;
+        console.log("Random no: ", seed);
+
+        if (seed < 25) {    
+            // Should create an event here later
+            console.log("%s WILL BE rewarded", msg.sender);
+            
+            /*
+                Sending the reward money to wavers
+            */
+            require(
+                prizeAmount <= address(this).balance,
+                "Funds insufficient to carry out the transaction."
+            );
+            (bool success, ) = (msg.sender).call{value: prizeAmount}("");
+            require(success, "Failed to withdraw money from the contract.");
+
+        } else {
+            // Should create an event here later
+            console.log("%s WILL NOT be rewarded", msg.sender);
+        }
     }
 
     /*
